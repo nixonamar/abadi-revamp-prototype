@@ -1,0 +1,106 @@
+/* ============================================================
+   AMAR BANK — Colors & Type Foundations
+   Modern Digital Banking (Indonesia)
+   ------------------------------------------------------------
+   Font note: Amar Bank's production typeface is a proprietary
+   rounded geometric sans. The closest free substitute is
+   POPPINS (Google Fonts) — used here throughout. Swap in the
+   real brand font files in /fonts if/when available.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+  /* ---------- BRAND CORE ---------- */
+  /* The infinity "bo" mark sweeps lime-green → teal → blue. */
+  --amar-green:      #7BC143;  /* leaf/lime green — mark start */
+  --amar-green-lt:   #9CCF69;
+  --amar-teal:       #33B2BF;  /* cyan/teal — mark middle */
+  --amar-teal-deep:  #2CA6B5;  /* "Download" pill, website CTA */
+  --amar-sky:        #1BB1ED;  /* bright sky blue — app header top */
+  --amar-blue:       #1253A5;  /* PRIMARY brand blue — wordmark, buttons */
+  --amar-blue-deep:  #0E4187;
+  --amar-navy:       #0A2E5C;  /* total-saldo band, deep surfaces */
+
+  /* Signature brand gradients */
+  --grad-mark:    linear-gradient(110deg, #7BC143 0%, #33B2BF 55%, #1253A5 100%);
+  --grad-header:  linear-gradient(120deg, #1BB1ED 0%, #1253A5 70%);
+  --grad-hero:    radial-gradient(120% 120% at 60% 45%, #277DDB 0%, #0F4A87 45%, #050E1B 100%);
+
+  /* ---------- PRODUCT ACCENTS (savings family) ---------- */
+  --celengan-from:  #7B3D97;  /* Celengan / Piggy Bank — purple */
+  --celengan-to:    #983F96;
+  --deposito-from:  #04833F;  /* Deposito — green */
+  --deposito-to:    #0B8F46;
+  --depo-from:      #FE2C51;  /* Depo Instan — coral/red */
+  --depo-to:        #FD6162;
+  --grad-celengan:  linear-gradient(160deg, #7B3D97 0%, #983F96 100%);
+  --grad-deposito:  linear-gradient(135deg, #04833F 0%, #14A155 100%);
+  --grad-depo:      linear-gradient(135deg, #FE2C51 0%, #FD6162 100%);
+
+  /* ---------- NEUTRALS ---------- */
+  --white:    #FFFFFF;
+  --bg:       #F4F6F9;  /* app/page canvas — cool off-white */
+  --bg-alt:   #EEF2F7;
+  --surface:  #FFFFFF;  /* cards */
+  --line:     #E4E9F0;  /* hairline borders / dividers */
+  --line-2:   #D4DCE6;
+
+  --ink:      #1B2430;  /* primary text (near-black, cool) */
+  --ink-2:    #51606F;  /* secondary text */
+  --ink-3:    #8A97A6;  /* tertiary / captions / disabled nav */
+  --ink-on-brand: #FFFFFF;
+
+  /* ---------- SEMANTIC ---------- */
+  --success:  #14A155;
+  --warning:  #F5A623;
+  --danger:   #E23744;
+  --info:     #1BB1ED;
+  --highlight:#F5A623;  /* the gold "%" / cashback highlight in cards */
+
+  /* ---------- TYPE SCALE ---------- */
+  --font-sans: 'Poppins', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-num:  'Poppins', sans-serif; /* tabular-ish balances use 500/700 */
+
+  --fs-display: 40px;  --lh-display: 1.12; --fw-display: 700;
+  --fs-h1:      30px;  --lh-h1:      1.18; --fw-h1:      700;
+  --fs-h2:      24px;  --lh-h2:      1.22; --fw-h2:      700;
+  --fs-h3:      19px;  --lh-h3:      1.3;  --fw-h3:      600;
+  --fs-body:    15px;  --lh-body:    1.55; --fw-body:    400;
+  --fs-sm:      13px;  --lh-sm:      1.5;  --fw-sm:      400;
+  --fs-cap:     11px;  --lh-cap:     1.4;  --fw-cap:     500;
+
+  /* ---------- RADII ---------- */
+  --r-sm:   8px;
+  --r-md:   14px;   /* tiles, inputs */
+  --r-lg:   20px;   /* cards */
+  --r-xl:   28px;   /* big panels / sheets */
+  --r-pill: 999px;
+
+  /* ---------- SHADOWS / ELEVATION ---------- */
+  --sh-1: 0 1px 2px rgba(16,42,92,.06), 0 1px 3px rgba(16,42,92,.05);
+  --sh-2: 0 4px 14px rgba(16,42,92,.08);
+  --sh-3: 0 10px 30px rgba(16,42,92,.12);
+  --sh-card: 0 6px 22px rgba(18,83,165,.10);
+
+  /* ---------- SPACING (4pt base) ---------- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px;
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT DEFAULTS
+   ============================================================ */
+.amar { font-family: var(--font-sans); color: var(--ink); }
+
+.amar-display { font: var(--fw-display) var(--fs-display)/var(--lh-display) var(--font-sans); letter-spacing: -.01em; }
+.amar-h1 { font: var(--fw-h1) var(--fs-h1)/var(--lh-h1) var(--font-sans); letter-spacing: -.01em; }
+.amar-h2 { font: var(--fw-h2) var(--fs-h2)/var(--lh-h2) var(--font-sans); }
+.amar-h3 { font: var(--fw-h3) var(--fs-h3)/var(--lh-h3) var(--font-sans); }
+.amar-body { font: var(--fw-body) var(--fs-body)/var(--lh-body) var(--font-sans); color: var(--ink-2); }
+.amar-sm { font: var(--fw-sm) var(--fs-sm)/var(--lh-sm) var(--font-sans); color: var(--ink-2); }
+.amar-cap { font: var(--fw-cap) var(--fs-cap)/var(--lh-cap) var(--font-sans); letter-spacing: .02em; color: var(--ink-3); text-transform: lowercase; }
+
+/* Balance / amount numerals — bold, deep blue or ink */
+.amar-amount { font: 700 var(--fs-h1)/1 var(--font-num); color: var(--ink); font-feature-settings: "tnum" 1; }
+.amar-rp { font-weight: 600; font-size: .6em; vertical-align: text-top; }

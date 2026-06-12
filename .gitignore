@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Screenshots (internal captures only)
+screenshots/
+
+# Duplicate — use kantor-pusat-peta-3d.html instead
+Kantor Pusat — Peta 3D.html

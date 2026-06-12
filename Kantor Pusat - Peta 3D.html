@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amar Bank — Kantor Pusat (Peta 3D)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="assets/colors_and_type.css">
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #cfe3f4;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #map3d { position: fixed; inset: 0; }
+  #map3d canvas { display: block; cursor: grab; }
+  #map3d canvas:active { cursor: grabbing; }
+
+  /* ── 3D labels ─────────────────────────────── */
+  #map3d-labels { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .m3-label {
+    position: absolute; top: 0; left: 0;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  .m3-hero {
+    display: flex; align-items: center; gap: 8px;
+    background: #ffffff;
+    border-radius: 999px;
+    padding: 7px 16px 7px 9px;
+    box-shadow: 0 6px 22px rgba(18, 83, 165, 0.22);
+  }
+  .m3-hero img { width: 28px; height: auto; display: block; }
+  .m3-hero span { display: flex; flex-direction: column; line-height: 1.15; }
+  .m3-hero b { font-size: 14px; font-weight: 700; color: #0a2e5c; }
+  .m3-hero span { font-size: 10.5px; font-weight: 500; color: #1253a5; }
+  .m3-road, .m3-dir, .m3-area {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    color: #ffffff;
+    background: rgba(10, 46, 92, 0.55);
+    padding: 3px 10px; border-radius: 999px;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  }
+  .m3-dir { background: rgba(10, 46, 92, 0.32); font-weight: 500; }
+  .m3-area { background: rgba(123, 193, 67, 0.85); color: #0a2e5c; }
+  body[data-time="malam"] .m3-area { color: #ffffff; background: rgba(123, 193, 67, 0.45); }
+  @media (max-width: 600px) { .ov-presets .pl-label { display: none; } }
+
+  /* ── overlay chrome ────────────────────────── */
+  .ov { position: fixed; z-index: 10; }
+
+  .ov-header {
+    top: 20px; left: 20px;
+    display: flex; align-items: center; gap: 14px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 12px 18px;
+    box-shadow: 0 6px 22px rgba(18, 83, 165, 0.10);
+  }
+  .ov-header img { height: 26px; display: block; }
+  .ov-header .sep { width: 1px; height: 24px; background: #e3eaf3; }
+  .ov-header .crumb { display: flex; flex-direction: column; line-height: 1.2; }
+  .ov-header .crumb small { font-size: 10px; font-weight: 500; color: #7d8da1; }
+  .ov-header .crumb strong { font-size: 13px; font-weight: 600; color: #0a2e5c; }
+
+  .ov-presets {
+    top: 20px; right: 20px;
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 999px;
+    padding: 5px;
+    box-shadow: 0 8px 24px rgba(10, 46, 92, 0.18);
+  }
+  .ov-presets .pl-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #7d8da1; padding: 0 7px 0 10px; white-space: nowrap;
+  }
+  .ov-presets button {
+    appearance: none; border: 0; cursor: pointer;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    color: #1253a5; background: transparent;
+    padding: 8px 15px; border-radius: 999px;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  }
+  .ov-presets button:hover { background: #eef4fb; }
+  .ov-presets button.on { background: #1253a5; color: #ffffff; box-shadow: 0 2px 8px rgba(18, 83, 165, 0.3); }
+
+  .ov-card {
+    left: 20px; bottom: 20px;
+    width: 330px; max-width: calc(100vw - 40px);
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 22px 22px 20px;
+    box-shadow: 0 10px 32px rgba(18, 83, 165, 0.16);
+  }
+  .ov-card .kicker {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    color: #33b2bf; margin: 0 0 4px;
+  }
+  .ov-card h1 {
+    margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+    color: #0a2e5c;
+  }
+  .ov-card .co { margin: 2px 0 10px; font-size: 12px; font-weight: 500; color: #1253a5; }
+  .ov-card .addr { margin: 0 0 12px; font-size: 12.5px; line-height: 1.55; color: #54647a; }
+  .ov-card .coords {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; color: #54647a;
+    background: #f4f6f9; border-radius: 999px;
+    padding: 5px 12px; margin-bottom: 16px;
+  }
+  .ov-card .coords i { font-style: normal; color: #7bc143; }
+  .ov-actions { display: flex; gap: 8px; }
+  .btn {
+    flex: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: inherit; font-size: 12.5px; font-weight: 600;
+    text-decoration: none; text-align: center;
+    border-radius: 999px; padding: 11px 14px;
+    transition: filter 0.18s, transform 0.12s;
+    cursor: pointer;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-teal { background: #2ca6b5; color: #ffffff; }
+  .btn-teal:hover { filter: brightness(0.94); }
+  .btn-line { background: #ffffff; color: #1253a5; box-shadow: inset 0 0 0 1.5px #c9d8ea; }
+  .btn-line:hover { background: #eef4fb; }
+
+  .ov-hint {
+    left: 50%; bottom: 24px;
+    transform: translateX(-50%);
+    font-size: 11.5px; font-weight: 500; color: #ffffff;
+    background: rgba(10, 46, 92, 0.6);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border-radius: 999px;
+    padding: 8px 18px;
+    transition: opacity 1s;
+    pointer-events: none;
+  }
+  .ov-hint.hide { opacity: 0; }
+
+  /* ── splash ────────────────────────────────── */
+  #splash {
+    position: fixed; inset: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px;
+    background: radial-gradient(ellipse at 50% 38%, #277ddb 0%, #0e3a74 55%, #050e1b 100%);
+    transition: opacity 0.6s; pointer-events: none;
+  }
+  #splash img { width: 72px; height: auto; animation: m3pulse 1.4s ease-in-out infinite; }
+  #splash span { font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, 0.75); letter-spacing: 0.06em; }
+  @keyframes m3pulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.12); opacity: 1; } }
+  body.m3-ready #splash { opacity: 0; }
+
+  /* ── embedded mode (inside the homepage iframe) ── */
+  body.embed .ov-header,
+  body.embed .ov-card,
+  body.embed #tweaks-root { display: none !important; }
+  body.embed .ov-presets { top: 16px; right: 16px; }
+  body.embed .ov-hint { bottom: 16px; }
+  body.embed #splash { background: radial-gradient(ellipse at 50% 38%, #277ddb 0%, #0e3a74 55%, #071a31 100%); }
+
+  @media (max-width: 760px) {
+    .ov-header .crumb small { display: none; }
+    .ov-presets { top: auto; bottom: 92px; right: 50%; transform: translateX(50%); }
+    .ov-card { width: calc(100vw - 32px); left: 16px; bottom: 16px; padding: 16px; }
+    .ov-card .addr { margin-bottom: 8px; }
+    .ov-hint { display: none; }
+  }
+</style>
+</head>
+<body data-screen-label="Kantor Pusat — Peta 3D" data-time="siang">
+<script>if (new URLSearchParams(location.search).has('embed')) document.body.classList.add('embed');</script>
+
+<div id="map3d"></div>
+<div id="map3d-labels"></div>
+
+<header class="ov ov-header">
+  <img src="assets/logo-horizontal.png" alt="Amar Bank">
+  <div class="sep"></div>
+  <div class="crumb">
+    <small>tentang kami</small>
+    <strong>Lokasi Kantor Pusat</strong>
+  </div>
+</header>
+
+<nav class="ov ov-presets" id="presets" aria-label="Sudut pandang">
+  <span class="pl-label">Tampilan</span>
+  <button data-p="street">Sudut Jalan</button>
+  <button data-p="orbit" class="on">Orbit 3D</button>
+  <button data-p="top">Tampak Atas</button>
+</nav>
+
+<aside class="ov ov-card">
+  <p class="kicker">kantor pusat</p>
+  <h1>RDTX Square</h1>
+  <p class="co">PT Bank Amar Indonesia Tbk</p>
+  <p class="addr">Jl. Prof. Dr. Satrio No. 164, Karet Semanggi, Setiabudi, Jakarta Selatan 12930</p>
+  <span class="coords"><i>●</i>-6.21779, 106.81888</span>
+  <div class="ov-actions">
+    <a class="btn btn-teal" href="https://www.google.com/maps/search/?api=1&amp;query=RDTX+Square+Jl.+Prof.+Dr.+Satrio+Jakarta" target="_blank" rel="noopener">Buka di Google Maps</a>
+    <a class="btn btn-line" href="https://www.google.com/maps/place/RDTX+SQUARE/@-6.2182397,106.8193687,3a,75y,305.69h,126.89t/data=!3m7!1e1!3m5!1sv7cWTi3VBJC7Nu0tYiebEQ!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-36.893371564583475%26panoid%3Dv7cWTi3VBJC7Nu0tYiebEQ%26yaw%3D305.6892561260987!7i16384!8i8192!4m16!1m8!3m7!1s0x2e69f30026f8127d:0x2f90696866d70d69!2sRDTX+SQUARE!8m2!3d-6.2177913!4d106.8188765!10e5!16s%2Fg%2F11vm7hl0yr!3m6!1s0x2e69f30026f8127d:0x2f90696866d70d69!8m2!3d-6.2177913!4d106.8188765!10e5!16s%2Fg%2F11vm7hl0yr" target="_blank" rel="noopener">Street View</a>
+  </div>
+</aside>
+
+<div class="ov ov-hint" id="hint">geser untuk memutar &nbsp;·&nbsp; scroll untuk zoom &nbsp;·&nbsp; klik kanan untuk menggeser</div>
+
+<div id="splash">
+  <img src="assets/logo-bo.png" alt="">
+  <span>memuat peta 3D…</span>
+</div>
+
+<div id="tweaks-root"></div>
+
+<script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
+<script src="src/map3d-scene.js"></script>
+
+<script>
+  (function () {
+    var nav = document.getElementById('presets');
+    nav.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      window.MAP3D.setPreset(b.dataset.p);
+      nav.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    });
+    setTimeout(function () { document.getElementById('hint').classList.add('hide'); }, 7000);
+  })();
+</script>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx"></script>
+<script type="text/babel" src="src/map3d-tweaks.jsx"></script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+/* Amar Bank — Website UI Kit styles (built on ../../colors_and_type.css) */
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);color:var(--ink);background:#fff}
+.site{width:100%;overflow-x:hidden}
+.wrap{max-width:1200px;margin:0 auto;padding:0 40px}
+
+/* ---- nav ---- */
+.nav{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:14px 40px;display:flex;align-items:center;gap:36px}
+.nav .logo{height:40px}
+.nav-links{display:flex;gap:30px;align-items:center;margin-left:8px}
+.nav-links a,.nav-links .navlink{color:var(--ink);text-decoration:none;font-weight:500;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:5px;position:relative}
+.nav-links a:hover,.nav-links .navlink:hover{color:var(--amar-blue)}
+.nav-cta{margin-left:auto}
+.btn{border:0;cursor:pointer;font-family:inherit;font-weight:600;border-radius:var(--r-pill);transition:filter .15s,transform .1s,background .15s,color .15s}
+.btn:active{transform:translateY(1px)}
+.btn-teal{background:var(--amar-teal-deep);color:#fff;font-size:15px;padding:12px 26px}
+.btn-teal:hover{filter:brightness(1.07)}
+.dropdown{position:absolute;top:130%;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--sh-3);padding:8px;min-width:180px;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:.18s}
+.dropdown.open{opacity:1;pointer-events:auto;top:150%}
+.dropdown span{padding:10px 14px;border-radius:var(--r-sm);font-size:14px;color:var(--ink);cursor:pointer}
+.dropdown span:hover{background:var(--bg);color:var(--amar-blue)}
+
+/* ---- hero ---- */
+.hero{background:var(--grad-hero);color:#fff;position:relative;overflow:hidden}
+.hero-inner{max-width:1200px;margin:0 auto;padding:70px 40px 80px;display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;min-height:520px}
+.hero h1{font-size:54px;line-height:1.08;font-weight:700;letter-spacing:-.015em;margin:0 0 22px}
+.hero .hash{color:#fff}
+.hero p{font-size:18px;line-height:1.55;color:rgba(255,255,255,.9);max-width:440px;margin:0 0 30px}
+.hero .ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.65);font-size:16px;padding:14px 30px}
+.hero .ghost:hover{background:#fff;color:var(--amar-blue);border-color:#fff}
+.stores{display:flex;gap:14px;margin-top:30px}
+.store{display:flex;align-items:center;gap:10px;background:#000;color:#fff;border-radius:10px;padding:9px 16px;text-decoration:none;border:1px solid rgba(255,255,255,.18)}
+.store svg{width:24px;height:24px}
+.store .s1{font-size:10px;opacity:.85;line-height:1;text-transform:uppercase;letter-spacing:.03em}
+.store .s2{font-size:16px;font-weight:600;line-height:1.15}
+.hero-art{position:relative;display:flex;align-items:center;justify-content:center}
+.hero-art image-slot{width:100%;height:440px;border-radius:var(--r-xl)}
+.flagdot{position:absolute;top:8%;right:6%;background:rgba(255,255,255,.12);backdrop-filter:blur(4px);border-radius:var(--r-pill);padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,.2)}
+.flagdot img{height:18px}
+
+/* ---- products ---- */
+.section{padding:80px 0}
+.section.alt{background:var(--bg)}
+.sec-head{text-align:center;max-width:640px;margin:0 auto 48px}
+.sec-head .eyebrow{color:var(--amar-teal-deep);font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px}
+.sec-head h2{font-size:38px;font-weight:700;letter-spacing:-.01em;margin:0 0 14px}
+.sec-head p{font-size:17px;color:var(--ink-2);line-height:1.55;margin:0}
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.prod{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-card);transition:transform .2s,box-shadow .2s;cursor:pointer}
+.prod:hover{transform:translateY(-6px);box-shadow:var(--sh-3)}
+.prod .cap{height:120px;display:flex;align-items:center;justify-content:center;color:#fff}
+.prod .cap svg{width:46px;height:46px;stroke-width:1.8}
+.prod .body{padding:24px}
+.prod .body h3{font-size:21px;font-weight:700;margin:0 0 8px}
+.prod .rate{font-size:30px;font-weight:700;margin:0 0 10px}
+.prod .body p{font-size:14px;color:var(--ink-2);line-height:1.5;margin:0 0 18px}
+.prod .more{display:inline-flex;align-items:center;gap:6px;color:var(--amar-blue);font-weight:600;font-size:14px}
+.cap-purple{background:var(--grad-celengan)} .rate-purple{color:var(--celengan-from)}
+.cap-blue{background:var(--grad-header)} .rate-blue{color:var(--amar-blue)}
+.cap-green{background:var(--grad-deposito)} .rate-green{color:var(--deposito-from)}
+
+/* ---- trust strip ---- */
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+.trust .stat .n{font-size:40px;font-weight:700;color:var(--amar-blue);letter-spacing:-.01em}
+.trust .stat .l{font-size:14px;color:var(--ink-2);margin-top:6px}
+.badges{display:flex;gap:20px;justify-content:center;align-items:center;margin-top:46px;color:var(--ink-3);font-size:13px;flex-wrap:wrap}
+.badges .chip{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);padding:8px 18px;font-weight:600;color:var(--ink-2)}
+
+/* ---- footer ---- */
+.footer{background:var(--amar-navy);color:rgba(255,255,255,.78);padding:56px 0 36px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:36px}
+.footer .logo{height:38px;margin-bottom:16px}
+.footer p{font-size:13px;line-height:1.65;margin:0;max-width:300px}
+.footer h4{color:#fff;font-size:14px;font-weight:700;margin:0 0 14px}
+.footer ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.footer a{color:rgba(255,255,255,.78);text-decoration:none;font-size:14px;cursor:pointer}
+.footer a:hover{color:#fff}
+.footer .legal{margin-top:40px;padding-top:24px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:rgba(255,255,255,.6);line-height:1.6}
+
+/* toast */
+.wtoast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:14px;font-weight:500;padding:13px 24px;border-radius:var(--r-pill);opacity:0;transition:.28s;z-index:90;pointer-events:none;box-shadow:var(--sh-3)}
+.wtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:900px){
+  .hero-inner,.prod-grid,.trust,.footer-grid{grid-template-columns:1fr}
+  .hero h1{font-size:38px}.nav-links{display:none}
+}
