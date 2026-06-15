@@ -36,12 +36,12 @@ function Proof(){
 }
 
 const YT_VIDEOS = [
-  { id:'U8uQDjtcxto' },
-  { id:'0sB-WzaWTGo' },
-  { id:'I2b_D2To3BQ' },
+  { id:'U8uQDjtcxto', title:'Investasi Terpercaya dengan Deposito di Amar Bank' },
+  { id:'0sB-WzaWTGo',  title:'Sukses Wujudkan Mimpi Bersama Tunaiku' },
+  { id:'I2b_D2To3BQ', title:'Lebih Dekat dengan Layanan Digital Amar Bank' },
 ];
 
-function YTCard({ id }) {
+function YTCard({ id, title }) {
   const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
   const url   = `https://www.youtube.com/watch?v=${id}`;
   return (
@@ -49,10 +49,17 @@ function YTCard({ id }) {
       <div className="yt-ratio">
         <div className="yt-bg" style={{backgroundImage:`url(${thumb})`}}></div>
         <div className="yt-scrim"></div>
-        <img className="yt-thumb" src={thumb} alt="Video testimoni Amar Bank" loading="lazy"/>
+        <img className="yt-thumb" src={thumb} alt={title} loading="lazy"/>
         <a className="yt-play" href={url} target="_blank" rel="noopener noreferrer" aria-label="Putar video">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </a>
+      </div>
+      <div className="yt-info">
+        <a className="yt-title-text" href={url} target="_blank" rel="noopener noreferrer">{title}</a>
+        <div className="yt-channel">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
+          Amar Bank Official
+        </div>
       </div>
     </div>
   );
@@ -68,7 +75,7 @@ function Testimonials(){
           <p>Dengar langsung dari mereka yang telah merasakan manfaat layanan Amar Bank.</p>
         </div>
         <div className="yt-grid">
-          {YT_VIDEOS.map(v => <YTCard key={v.id} id={v.id}></YTCard>)}
+          {YT_VIDEOS.map(v => <YTCard key={v.id} id={v.id} title={v.title}></YTCard>)}
         </div>
       </div>
     </section>

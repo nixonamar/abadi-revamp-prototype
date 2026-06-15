@@ -11,3 +11,8 @@
   from = "/Amar Bank - Smart Gateway Homepage.html"
   to = "/"
   status = 301
+
+[[redirects]]
+  from = "/digital"
+  to = "/digital.html"
+  status = 200

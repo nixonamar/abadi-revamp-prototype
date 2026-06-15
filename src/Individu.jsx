@@ -81,6 +81,9 @@ function AppDownload({ onToast, banner }) {
             <div className="row"><span className="ic"><Icon name="sparkles" size={16} /></span><div><b>Nabung cerdas, perencanaan pintar.</b> <span>Semua dalam satu aplikasi — dibantu AI supaya tujuanmu tercapai.</span></div></div>
             <div className="row"><span className="ic"><Icon name="percent" size={16} /></span><div><b>Deposito bunga hingga 9% p.a.</b> <span>Langsung dari app, minimal Rp100 ribu, tenor 1–36 bulan.</span></div></div>
           </div>
+          <a className="btn btn-teal btn-lg" href="digital.html" style={{marginTop:'8px',textDecoration:'none'}}>
+            <Icon name="play-circle" size={17} color="#fff" /> Coba Simulasi Aplikasi
+          </a>
         </div>
         <div className="qr">
           <div className="qrbox"><QR payload="amarbank-app-dl" color="#093C69" /></div>
