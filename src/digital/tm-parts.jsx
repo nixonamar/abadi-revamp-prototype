@@ -3,13 +3,13 @@ const { useState, useEffect, useRef, useMemo, useCallback } = React;
 const TMfmt = window.TM.fmt;
 const TMshort = window.TM.fmtShort;
 
-// product metadata
+// product metadata (keys/colors/icons only — display names/rates come from TM_STRINGS)
 const PRODUCTS = {
-  active:   { key: 'active',   name: 'Saldo Aktif', color: '#1BB1ED', icon: 'wallet',     rate: '0,5% p.a.' },
-  celengan: { key: 'celengan', name: 'Celengan',    color: '#9A57B0', icon: 'piggy-bank', rate: '5,5% p.a.' },
-  brankas:  { key: 'brankas',  name: 'Brankas',     color: '#2C5BA0', icon: 'vault',      rate: '3,5% p.a.' },
-  deposito: { key: 'deposito', name: 'Deposito',    color: '#14A155', icon: 'trending-up',rate: 'hingga 9%' },
-  depoInstan:{ key: 'depoInstan', name: 'Depo Instan', color: '#FE2C51', icon: 'zap',     rate: 'cashback' },
+  active:    { key: 'active',    color: '#1BB1ED', icon: 'wallet'      },
+  celengan:  { key: 'celengan',  color: '#9A57B0', icon: 'piggy-bank'  },
+  brankas:   { key: 'brankas',   color: '#2C5BA0', icon: 'vault'       },
+  deposito:  { key: 'deposito',  color: '#14A155', icon: 'trending-up' },
+  depoInstan:{ key: 'depoInstan',color: '#FE2C51', icon: 'zap'         },
 };
 const PRODUCT_ORDER = ['active', 'celengan', 'brankas', 'deposito', 'depoInstan'];
 
@@ -37,6 +37,7 @@ function AnimNum({ value, dur = 600, prefix = 'Rp\u00A0', className }) {
 
 // Growth area chart with playhead + event markers + hover tooltip
 function GrowthChart({ series, playMonth, events, startDate }) {
+  const t = useTMLang();
   const W = 720, H = 280, padL = 50, padR = 16, padT = 18, padB = 30;
   const iw = W - padL - padR, ih = H - padT - padB;
   const n = series.length;
@@ -96,7 +97,7 @@ function GrowthChart({ series, playMonth, events, startDate }) {
         ))}
         {xticks.map((m, i) => (
           <text key={i} className="axis-lbl" x={x(m)} y={H - 9} textAnchor="middle">
-            {m === 0 ? 'kini' : window.TM.dateForMonth(startDate, m).getFullYear()}
+            {m === 0 ? t.now : window.TM.dateForMonth(startDate, m).getFullYear()}
           </text>
         ))}
         {area && <path d={area} fill="url(#tmArea)" />}
@@ -156,7 +157,6 @@ function Confetti({ seed }) {
   );
 }
 
-// twinkling starfield (decorative, behind wizard)
 function StarField({ count = 60 }) {
   const stars = useMemo(() => Array.from({ length: count }, () => ({
     left: Math.random() * 100, top: Math.random() * 100,

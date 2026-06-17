@@ -9,26 +9,22 @@ function rpShort(n) {
   return rp(n);
 }
 
-// Deterministic QR-like matrix (decorative placeholder that scans to the deep link visual).
+// Deterministic QR-like matrix (decorative placeholder)
 function QR({ size = 25, payload = 'amarbank', color = '#0A2E5C' }) {
   const cells = useMemo(() => {
-    // seeded pseudo-random from payload
-    let s = 0;for (const c of payload) s = s * 31 + c.charCodeAt(0) >>> 0;
-    const rand = () => {s = s * 1103515245 + 12345 & 0x7fffffff;return s / 0x7fffffff;};
+    let s = 0; for (const c of payload) s = s * 31 + c.charCodeAt(0) >>> 0;
+    const rand = () => { s = s * 1103515245 + 12345 & 0x7fffffff; return s / 0x7fffffff; };
     const g = Array.from({ length: size }, () => Array.from({ length: size }, () => rand() > 0.52));
-    // finder patterns at 3 corners
     const place = (r, c) => {
       for (let i = -1; i < 8; i++) for (let j = -1; j < 8; j++) {
-        const rr = r + i,cc = c + j;if (rr < 0 || cc < 0 || rr >= size || cc >= size) continue;
+        const rr = r + i, cc = c + j; if (rr < 0 || cc < 0 || rr >= size || cc >= size) continue;
         const onRing = i >= 0 && i <= 6 && j >= 0 && j <= 6 && (i === 0 || i === 6 || j === 0 || j === 6);
         const core = i >= 2 && i <= 4 && j >= 2 && j <= 4;
         const quiet = i === -1 || i === 7 || j === -1 || j === 7;
         g[rr][cc] = quiet ? false : onRing || core;
       }
     };
-    place(0, 0);place(0, size - 7);place(size - 7, 0);
-    // timing-ish + alignment fleck
-    place(size - 9, size - 9);
+    place(0, 0); place(0, size - 7); place(size - 7, 0); place(size - 9, size - 9);
     return g;
   }, [payload, size]);
   const unit = 100 / size;
@@ -36,13 +32,11 @@ function QR({ size = 25, payload = 'amarbank', color = '#0A2E5C' }) {
     <svg viewBox="0 0 100 100" shapeRendering="crispEdges" role="img" aria-label="QR untuk unduh aplikasi">
       <rect width="100" height="100" fill="#fff" />
       {cells.map((row, r) => row.map((on, c) => on ?
-      <rect key={r + '-' + c} x={c * unit} y={r * unit} width={unit} height={unit} fill={color} rx={unit * 0.18} /> :
-      null))}
+        <rect key={r + '-' + c} x={c * unit} y={r * unit} width={unit} height={unit} fill={color} rx={unit * 0.18} /> : null))}
     </svg>);
-
 }
 
-// App store buttons (used in hero + app module)
+// App store buttons
 function StoreButtons({ onClick }) {
   return (
     <div className="stores">
@@ -59,6 +53,8 @@ function StoreButtons({ onClick }) {
 
 // AnnouncementBar — slim strip above nav, dismissible, persists via localStorage
 function AnnouncementBar() {
+  const { lang } = useLang();
+  const s = STRINGS[lang].announce;
   const LS_KEY = 'amar_announce_dismiss_kc_kusuma_v1';
   const [visible, setVisible] = useState(() => {
     try { return !localStorage.getItem(LS_KEY); } catch(e) { return true; }
@@ -73,12 +69,12 @@ function AnnouncementBar() {
       <div className="announce-inner">
         <span className="announce-icon"><Icon name="triangle-alert" size={15}/></span>
         <span className="announce-text">
-          <strong>Informasi Kantor Cabang:</strong>{' '}KC Kusuma Bangsa efektif berhenti beroperasi pada{' '}
-          <strong>15 September 2025</strong>. Seluruh aktivitas dialihkan ke{' '}
-          <strong>KC Basuki Rahmat</strong> — Jl. Basuki Rahmat No. 109, Surabaya 60271.
+          <strong>{s.title}</strong>{' '}{s.body1}{' '}
+          <strong>{s.date}</strong>. {s.body2}{' '}
+          <strong>{s.branch}</strong>{' '}{s.addr}
         </span>
-        <span className="announce-link" role="button" tabIndex="0">Lihat Detail</span>
-        <button className="announce-close" onClick={dismiss} aria-label="Tutup pengumuman">
+        <span className="announce-link" role="button" tabIndex="0">{s.detail}</span>
+        <button className="announce-close" onClick={dismiss} aria-label={s.close_aria}>
           <Icon name="x" size={14}/>
         </button>
       </div>

@@ -53,6 +53,25 @@
   body[data-time="malam"] .m3-area { color: #ffffff; background: rgba(123, 193, 67, 0.45); }
   @media (max-width: 600px) { .ov-presets .pl-label { display: none; } }
 
+  /* ── language toggle ────────────────────────── */
+  .map3d-lt-sep {
+    width: 1px; height: 22px;
+    background: rgba(255,255,255,.25);
+    margin: 0 2px; flex-shrink: 0;
+  }
+  .map3d-lt { display: flex; gap: 2px; flex-shrink: 0; }
+  .map3d-lt button {
+    appearance: none; border: 0; cursor: pointer;
+    font-family: inherit; font-size: 11px; font-weight: 700;
+    letter-spacing: .04em; padding: 6px 12px; border-radius: 999px;
+    color: rgba(255,255,255,.65); background: transparent;
+    transition: background .15s, color .15s;
+  }
+  .map3d-lt button.on { background: rgba(255,255,255,.9); color: #1253a5; }
+  .map3d-lt button:hover:not(.on) { background: rgba(255,255,255,.18); color: #fff; }
+  body.embed .map3d-lt,
+  body.embed .map3d-lt-sep { display: none !important; }
+
   /* ── overlay chrome ────────────────────────── */
   .ov { position: fixed; z-index: 10; }
 
@@ -193,10 +212,15 @@
 </header>
 
 <nav class="ov ov-presets" id="presets" aria-label="Sudut pandang">
-  <span class="pl-label">Tampilan</span>
-  <button data-p="street">Sudut Jalan</button>
-  <button data-p="orbit" class="on">Orbit 3D</button>
-  <button data-p="top">Tampak Atas</button>
+  <span class="pl-label" id="map3d-view-label">Tampilan</span>
+  <button data-p="street" id="map3d-btn-street">Sudut Jalan</button>
+  <button data-p="orbit" class="on" id="map3d-btn-orbit">Orbit 3D</button>
+  <button data-p="top" id="map3d-btn-top">Tampak Atas</button>
+  <span class="map3d-lt-sep"></span>
+  <div class="map3d-lt" id="map3d-lt">
+    <button id="map3d-lt-id" onclick="setMap3DLang('id')">ID</button>
+    <button id="map3d-lt-en" onclick="setMap3DLang('en')">EN</button>
+  </div>
 </nav>
 
 <aside class="ov ov-card">
@@ -219,6 +243,84 @@
 </div>
 
 <div id="tweaks-root"></div>
+
+<script>
+/* ── Language toggle for the 3D map page ───────────────────────────────────
+   Shares the same localStorage key ('amar_lang') as the main React site so
+   toggling on any page persists the choice everywhere.                      */
+(function () {
+  var STRINGS = {
+    id: {
+      crumb_small: 'tentang kami',
+      crumb_strong: 'Lokasi Kantor Pusat',
+      view_label: 'Tampilan',
+      btn_street: 'Sudut Jalan',
+      btn_orbit: 'Orbit 3D',
+      btn_top: 'Tampak Atas',
+      kicker: 'kantor pusat',
+      maps_btn: 'Buka di Google Maps',
+      sv_btn: 'Street View',
+      hint: 'geser untuk memutar\u00A0\u00B7\u00A0scroll untuk zoom\u00A0\u00B7\u00A0klik kanan untuk menggeser',
+      splash: 'memuat peta 3D\u2026',
+    },
+    en: {
+      crumb_small: 'about us',
+      crumb_strong: 'Head Office Location',
+      view_label: 'View',
+      btn_street: 'Street Level',
+      btn_orbit: '3D Orbit',
+      btn_top: 'Top View',
+      kicker: 'head office',
+      maps_btn: 'Open in Google Maps',
+      sv_btn: 'Street View',
+      hint: 'drag to rotate\u00A0\u00B7\u00A0scroll to zoom\u00A0\u00B7\u00A0right-click to pan',
+      splash: 'loading 3D map\u2026',
+    },
+  };
+
+  function applyLang(lang) {
+    var s = STRINGS[lang] || STRINGS.id;
+    var q = function(sel) { return document.querySelector(sel); };
+    var crumbSmall = q('.crumb small');
+    var crumbStrong = q('.crumb strong');
+    if (crumbSmall) crumbSmall.textContent = s.crumb_small;
+    if (crumbStrong) crumbStrong.textContent = s.crumb_strong;
+    var viewLabel = document.getElementById('map3d-view-label');
+    if (viewLabel) viewLabel.textContent = s.view_label;
+    var btnStreet = document.getElementById('map3d-btn-street');
+    var btnOrbit  = document.getElementById('map3d-btn-orbit');
+    var btnTop    = document.getElementById('map3d-btn-top');
+    if (btnStreet) btnStreet.textContent = s.btn_street;
+    if (btnOrbit)  btnOrbit.textContent  = s.btn_orbit;
+    if (btnTop)    btnTop.textContent    = s.btn_top;
+    var kicker = q('.kicker');
+    if (kicker) kicker.textContent = s.kicker;
+    var actions = document.querySelectorAll('.ov-actions .btn');
+    if (actions[0]) actions[0].textContent = s.maps_btn;
+    if (actions[1]) actions[1].textContent = s.sv_btn;
+    var hint = document.getElementById('hint');
+    if (hint) hint.textContent = s.hint;
+    var splashSpan = q('#splash span');
+    if (splashSpan) splashSpan.textContent = s.splash;
+    document.documentElement.lang = lang;
+    // Update toggle button states
+    var ltId = document.getElementById('map3d-lt-id');
+    var ltEn = document.getElementById('map3d-lt-en');
+    if (ltId) ltId.className = lang === 'id' ? 'on' : '';
+    if (ltEn) ltEn.className = lang === 'en' ? 'on' : '';
+  }
+
+  window.setMap3DLang = function (lang) {
+    try { localStorage.setItem('amar_lang', lang); } catch(e) {}
+    applyLang(lang);
+  };
+
+  // Apply saved preference on load
+  var saved = 'id';
+  try { saved = localStorage.getItem('amar_lang') || 'id'; } catch(e) {}
+  applyLang(saved);
+})();
+</script>
 
 <script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
 <script src="src/map3d-scene.js"></script>

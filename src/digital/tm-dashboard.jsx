@@ -2,16 +2,15 @@
 const { useState: useSD, useEffect: useED, useRef: useRD, useMemo: useMD, useCallback: useCD } = React;
 
 function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
+  const t = useTMLang();
   const series = result.series;
   const N = series.length - 1;
   const [playMonth, setPlayMonth] = useSD(N);
   const [playing, setPlaying] = useSD(false);
   const firedRef = useRD({});
 
-  // reset to end whenever projection changes
   useED(() => { setPlayMonth(N); setPlaying(false); firedRef.current = {}; }, [result]);
 
-  // playback loop
   useED(() => {
     if (!playing) return;
     if (playMonth >= N) { setPlaying(false); return; }
@@ -19,7 +18,6 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
     return () => clearTimeout(id);
   }, [playing, playMonth, N]);
 
-  // fire events when playhead reaches a month
   useED(() => {
     result.events.filter(e => e.month === playMonth).forEach(e => {
       const key = e.type + e.month;
@@ -33,7 +31,7 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
   const summary = result.summary;
   const startDate = result.startDate;
   const endLabel = window.TM.labelForMonth(startDate, N);
-  const curLabel = playMonth === 0 ? 'awal' : window.TM.labelForMonth(startDate, playMonth);
+  const curLabel = playMonth === 0 ? t.now : window.TM.labelForMonth(startDate, playMonth);
   const feed = result.events.filter(e => e.month <= playMonth).slice().reverse();
 
   const startPlay = () => {
@@ -41,59 +39,61 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
     else setPlaying(p => !p);
   };
 
-  // where the money sits at current month
   const buckets = {
     active: cur.active, celengan: cur.celengan, brankas: cur.brankas,
     deposito: cur.deposito + cur.depoHold, depoInstan: cur.depoInstan,
   };
   const whereMax = Math.max(1, ...Object.values(buckets));
 
-  // edit panel
   const yearChips = [1, 3, 5, 10, 20];
   const setMonthly = (v) => setCfg(p => ({ ...p, monthly: v }));
   const setYears = (y) => setCfg(p => ({ ...p, horizon: { ...p.horizon, mode: 'relative', years: y } }));
+
+  const playIcon = playing ? 'pause' : (playMonth >= N ? 'rotate-ccw' : 'play');
+  const playLabel = playing ? t.pause : (playMonth >= N ? t.replay : t.play);
 
   return (
     <div className="tm-scene tm-dash">
       <nav className="dash-nav">
         <div className="dash-nav-in">
           <img className="logo" src="assets/logo-horizontal.png" alt="Amar Bank" />
-          <span className="dash-arrived"><Icon name="check-circle-2" size={14} /> Tiba di {endLabel}</span>
+          <span className="dash-arrived"><Icon name="check-circle-2" size={14} /> {t.arrived(endLabel)}</span>
           <span className="spacer" />
-          <a className="dash-back" href="index.html"><Icon name="home" size={15} /> Beranda</a>
-          <button className="btn btn-teal" onClick={() => notify('Mengarahkan ke halaman unduh aplikasi…', 'smartphone', 'celebrate')} style={{ marginLeft: 4 }}>Download Amar Bank</button>
+          <TMLangToggle />
+          <a className="dash-back" href="index.html"><Icon name="home" size={15} /> {t.dash_home}</a>
+          <button className="btn btn-teal"
+            onClick={() => notify(t.toast_app, 'smartphone', 'celebrate')}
+            style={{ marginLeft: 4 }}>{t.download_app}</button>
         </div>
       </nav>
 
       <div className="dash-wrap">
-        {/* arrival headline */}
         <div className="arrival-head">
-          <div className="when"><Icon name="clock" size={14} /> {summary.months} bulan dari sekarang · {endLabel}</div>
-          <h1>Total kekayaanmu kalau konsisten mulai hari ini</h1>
+          <div className="when"><Icon name="clock" size={14} /> {summary.months} {t.months_from_now} · {endLabel}</div>
+          <h1>{t.dash_h1}</h1>
           <div className="arrival-total"><span className="rp">Rp</span><AnimNum value={cur.total} prefix="" dur={900} /></div>
           <div className="arrival-delta">
-            <span className="d"><Icon name="wallet" size={16} color="#51606F" /> Modal disetor <b>{window.TM.fmt(cur.cumDeposited)}</b></span>
-            <span className="d up"><Icon name="trending-up" size={16} color="#14A155" /> Bunga &amp; cashback <b>+{window.TM.fmt(cur.cumInterest)}</b></span>
-            <span className="d"><Icon name="receipt-text" size={16} color="#51606F" /> Pajak <b>−{window.TM.fmt(cur.cumTax)}</b></span>
+            <span className="d"><Icon name="wallet" size={16} color="#51606F" /> {t.deposited_lbl} <b>{window.TM.fmt(cur.cumDeposited)}</b></span>
+            <span className="d up"><Icon name="trending-up" size={16} color="#14A155" /> {t.interest_lbl} <b>+{window.TM.fmt(cur.cumInterest)}</b></span>
+            <span className="d"><Icon name="receipt-text" size={16} color="#51606F" /> {t.tax_lbl} <b>−{window.TM.fmt(cur.cumTax)}</b></span>
           </div>
         </div>
 
         <div className="dash-grid">
-          {/* LEFT */}
           <div>
             <div className="panel">
               <div className="panel-h">
-                <h3><Icon name="line-chart" size={17} color="#1253A5" /> Perjalanan kekayaanmu</h3>
+                <h3><Icon name="line-chart" size={17} color="#1253A5" /> {t.chart_h}</h3>
                 <div className="chart-legend">
-                  <span className="lg"><span className="sw" style={{ background: '#1253A5' }} /> Total saldo</span>
-                  <span className="lg"><span className="sw" style={{ background: '#F5A623' }} /> Perubahan aturan</span>
-                  <span className="lg"><span className="sw" style={{ background: '#7BC143' }} /> Tonggak</span>
+                  <span className="lg"><span className="sw" style={{ background: '#1253A5' }} /> {t.lg_total}</span>
+                  <span className="lg"><span className="sw" style={{ background: '#F5A623' }} /> {t.lg_change}</span>
+                  <span className="lg"><span className="sw" style={{ background: '#7BC143' }} /> {t.lg_milestone}</span>
                 </div>
               </div>
               <GrowthChart series={series} playMonth={playMonth} events={result.events} startDate={startDate} />
               <div className="dash-transport">
-                <button className="play-btn" onClick={startPlay} aria-label={playing ? 'Jeda' : 'Putar'}>
-                  <Icon name={playing ? 'pause' : (playMonth >= N ? 'rotate-ccw' : 'play')} size={19} color="#fff" />
+                <button className="play-btn" onClick={startPlay} aria-label={playLabel}>
+                  <Icon name={playIcon} size={19} color="#fff" />
                 </button>
                 <input type="range" className="rng-l" style={{ flex: 1 }} min="0" max={N} step="1" value={playMonth}
                   onChange={(e) => { setPlaying(false); setPlayMonth(+e.target.value); }} />
@@ -103,37 +103,38 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
 
             <div className="stat-row">
               <div className="stat b">
-                <div className="k"><Icon name="landmark" size={14} /> Saldo akhir</div>
+                <div className="k"><Icon name="landmark" size={14} /> {t.stat_final}</div>
                 <div className="v">{window.TM.fmtShort(summary.finalTotal)}</div>
                 <div className="f">{window.TM.fmt(summary.finalTotal)}</div>
               </div>
               <div className="stat g">
-                <div className="k"><Icon name="sprout" size={14} /> Bunga + cashback</div>
+                <div className="k"><Icon name="sprout" size={14} /> {t.stat_interest}</div>
                 <div className="v">+{window.TM.fmtShort(summary.totalInterest)}</div>
-                <div className="f">{summary.growthPct.toLocaleString('id-ID', { maximumFractionDigits: 0 })}% dari modal</div>
+                <div className="f">{t.stat_from_modal(summary.growthPct.toLocaleString('id-ID', { maximumFractionDigits: 0 }))}</div>
               </div>
               <div className="stat">
-                <div className="k"><Icon name="coins" size={14} /> Modal disetor</div>
+                <div className="k"><Icon name="coins" size={14} /> {t.stat_capital}</div>
                 <div className="v">{window.TM.fmtShort(summary.totalDeposited)}</div>
-                <div className="f">dari kantongmu</div>
+                <div className="f">{t.stat_from_pocket}</div>
               </div>
               <div className="stat r">
-                <div className="k"><Icon name="receipt-text" size={14} /> Total pajak</div>
+                <div className="k"><Icon name="receipt-text" size={14} /> {t.stat_tax}</div>
                 <div className="v">−{window.TM.fmtShort(summary.totalTax)}</div>
-                <div className="f">{summary.totalTax > 0 ? 'pajak 20% bunga' : 'belum kena pajak'}</div>
+                <div className="f">{t.stat_tax_note(summary.totalTax > 0)}</div>
               </div>
             </div>
 
             <div className="panel" style={{ marginTop: 22 }}>
-              <div className="panel-h"><h3><Icon name="layers" size={17} color="#1253A5" /> Di mana uangmu berada</h3><span className="sub">{curLabel}</span></div>
+              <div className="panel-h"><h3><Icon name="layers" size={17} color="#1253A5" /> {t.where_h}</h3><span className="sub">{curLabel}</span></div>
               <div className="where-list">
                 {PRODUCT_ORDER.map(k => {
                   const p = PRODUCTS[k], amt = buckets[k];
+                  const pd = t.products[k];
                   return (
                     <div className="where-item" key={k}>
                       <div className="wh-top">
                         <span className="dot" style={{ background: p.color }} />
-                        <span className="nm">{p.name} <small>· {p.rate}</small></span>
+                        <span className="nm">{pd.name} <small>· {pd.rate}</small></span>
                         <span className="am">{window.TM.fmt(amt)}</span>
                       </div>
                       <div className="bar"><div className="fill" style={{ width: (amt / whereMax * 100) + '%', background: p.color }} /></div>
@@ -145,18 +146,18 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
 
             {cur.celBuckets.length > 0 && (
               <div className="panel" style={{ marginTop: 22 }}>
-                <div className="panel-h"><h3><Icon name="target" size={17} color="#9A57B0" /> Tujuan Celengan</h3><span className="sub">{curLabel}</span></div>
+                <div className="panel-h"><h3><Icon name="target" size={17} color="#9A57B0" /> {t.goals_h}</h3><span className="sub">{curLabel}</span></div>
                 <div className="goals-list">
                   {cur.celBuckets.map(c => {
                     const pct = c.goal > 0 ? Math.min(100, c.balance / c.goal * 100) : 100;
                     return (
                       <div className="goal-item" key={c.id}>
                         <div className="g-top">
-                          <span className="gp">{c.purpose || 'Tanpa nama'}</span>
+                          <span className="gp">{c.purpose || t.unnamed}</span>
                           <span className="gv">{window.TM.fmt(c.balance)}{c.goal > 0 ? ' / ' + window.TM.fmt(c.goal) : ''}</span>
                         </div>
                         <div className="g-bar"><div className="g-fill" style={{ width: pct + '%' }} /></div>
-                        {c.done && <span className="g-done"><Icon name="check-circle-2" size={12} color="#14A155" /> Target tercapai!</span>}
+                        {c.done && <span className="g-done"><Icon name="check-circle-2" size={12} color="#14A155" /> {t.goal_reached}</span>}
                       </div>
                     );
                   })}
@@ -165,9 +166,9 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
             )}
 
             <div className="panel" style={{ marginTop: 22 }}>
-              <div className="panel-h"><h3><Icon name="bell-ring" size={17} color="#1253A5" /> Catatan perjalanan</h3></div>
+              <div className="panel-h"><h3><Icon name="bell-ring" size={17} color="#1253A5" /> {t.feed_h}</h3></div>
               {feed.length === 0 ? (
-                <div className="feed-empty">Tekan play untuk memutar ulang perjalanan dan melihat tonggak, perubahan bunga, dan pajak muncul di sini.</div>
+                <div className="feed-empty">{t.feed_empty}</div>
               ) : (
                 <div className="feed">
                   {feed.map((e, i) => (
@@ -177,7 +178,7 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
                         <p className="fi-t">{e.title}</p>
                         <p className="fi-d">{e.desc}</p>
                       </div>
-                      <span className="fi-m">{e.month === 0 ? 'awal' : window.TM.labelForMonth(startDate, e.month)}</span>
+                      <span className="fi-m">{e.month === 0 ? t.now : window.TM.labelForMonth(startDate, e.month)}</span>
                     </div>
                   ))}
                 </div>
@@ -185,18 +186,20 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
             </div>
           </div>
 
-          {/* RIGHT — edit + restart */}
           <div className="panel edit-panel">
             <div className="ep-h">
               <span className="ic"><Icon name="settings-2" size={18} color="#fff" /></span>
-              <div><h3>Setel ulang mesin</h3><p>Ubah, lalu lompat lagi</p></div>
+              <div><h3>{t.edit_h}</h3><p>{t.edit_sub}</p></div>
             </div>
             <div className="ep-field">
-              <div className="ep-row"><label>Setoran bulanan</label><span className="val">{window.TM.fmt(cfg.monthly)}</span></div>
+              <div className="ep-row"><label>{t.monthly_dep}</label><span className="val">{window.TM.fmt(cfg.monthly)}</span></div>
               <input type="range" className="rng-l" min="0" max="80000000" step="500000" value={cfg.monthly} onChange={(e) => setMonthly(+e.target.value)} />
             </div>
             <div className="ep-field">
-              <div className="ep-row"><label>Tujuan waktu</label><span className="val">{cfg.horizon.mode === 'date' && cfg.horizon.date ? endLabel : cfg.horizon.years + ' tahun'}</span></div>
+              <div className="ep-row">
+                <label>{t.time_goal}</label>
+                <span className="val">{cfg.horizon.mode === 'date' && cfg.horizon.date ? endLabel : cfg.horizon.years + ' ' + t.yr_unit}</span>
+              </div>
               <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
                 {yearChips.map(y => (
                   <button key={y} onClick={() => setYears(y)}
@@ -204,33 +207,32 @@ function Dashboard({ cfg, setCfg, result, onRestart, onEditFull, notify }) {
                       border: '1.5px solid ' + (cfg.horizon.mode === 'relative' && cfg.horizon.years === y ? 'var(--amar-blue)' : 'var(--line-2)'),
                       background: cfg.horizon.mode === 'relative' && cfg.horizon.years === y ? 'rgba(18,83,165,.07)' : '#fff',
                       color: cfg.horizon.mode === 'relative' && cfg.horizon.years === y ? 'var(--amar-blue)' : 'var(--ink-2)' }}>
-                    {y}th
+                    {y}{t.yr_unit.slice(0,2)}
                   </button>
                 ))}
               </div>
             </div>
             <div className="ep-restart">
-              <button className="btn-restart" onClick={onRestart}><Icon name="rocket" size={17} color="#fff" /> Jalankan ulang mesin waktu</button>
-              <button className="ep-edit-full" onClick={onEditFull}><Icon name="sliders-horizontal" size={15} /> Ubah alokasi &amp; celengan</button>
-              <p className="ep-hint">Geser setoran atau ganti tujuan waktu — grafik di sebelah ikut berubah seketika. Tekan tombol di atas untuk perjalanan waktu yang baru.</p>
+              <button className="btn-restart" onClick={onRestart}><Icon name="rocket" size={17} color="#fff" /> {t.rerun}</button>
+              <button className="ep-edit-full" onClick={onEditFull}><Icon name="sliders-horizontal" size={15} /> {t.edit_alloc}</button>
+              <p className="ep-hint">{t.edit_hint}</p>
             </div>
           </div>
         </div>
 
-        {/* CTA */}
         <div className="dash-cta">
           <div>
-            <h3>Masa depan ini bisa kamu mulai hari ini.</h3>
-            <p>Buka rekening Amar Bank Digital dalam hitungan menit dan kelola Celengan, Deposito, Brankas, hingga Depo Instan langsung dari ponsel — diawasi OJK, dijamin LPS.</p>
+            <h3>{t.cta_h}</h3>
+            <p>{t.cta_p}</p>
           </div>
           <StoreButtons />
         </div>
 
         <div className="dash-foot">
-          © 2026 PT Bank Amar Indonesia Tbk — simulasi ilustratif berbasis asumsi bunga saat ini, bukan jaminan imbal hasil.
+          {t.footer}
           <div className="seals">
-            <span><Icon name="shield-check" size={13} color="#14A155" /> Diawasi OJK</span>
-            <span><Icon name="landmark" size={13} color="#14A155" /> Dijamin LPS</span>
+            <span><Icon name="shield-check" size={13} color="#14A155" /> {t.seal_ojk}</span>
+            <span><Icon name="landmark" size={13} color="#14A155" /> {t.seal_lps}</span>
           </div>
         </div>
       </div>

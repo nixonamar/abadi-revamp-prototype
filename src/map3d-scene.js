@@ -315,9 +315,9 @@
   );
   addLabel('Jl. Prof. Dr. Satrio', new THREE.Vector3(-70, 1, 70), 'm3-road');
   addLabel('Jl. Prof. Dr. Satrio', new THREE.Vector3(200, 1, 70), 'm3-road');
-  addLabel('arah Jl. Jend. Sudirman', new THREE.Vector3(-345, 3, 70), 'm3-dir');
-  addLabel('arah Kuningan · Ciputra World', new THREE.Vector3(345, 3, 70), 'm3-dir');
-  addLabel('Karet Semanggi, Setiabudi', new THREE.Vector3(-60, 1, -180), 'm3-area');
+  addLabel('arah Kuningan · Ciputra World', new THREE.Vector3(-345, 3, 70), 'm3-dir');
+  addLabel('arah Jl. Jend. Sudirman', new THREE.Vector3(345, 3, 70), 'm3-dir');
+  addLabel('Jl. Gatot Subroto', new THREE.Vector3(-60, 1, -180), 'm3-area');
 
   const v3 = new THREE.Vector3();
   function updateLabels() {

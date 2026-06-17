@@ -8,19 +8,28 @@ function deserialize(str) {
   try {
     const o = JSON.parse(str);
     o.startDate = o.startDate ? new Date(o.startDate) : startOfThisMonth();
-    // re-anchor startDate to this month so projections stay "from now"
     o.startDate = startOfThisMonth();
     return o;
   } catch (e) { return null; }
 }
 
 function TimeMachine() {
+  // ── Language state — shared across all pages via localStorage ──
+  const [lang, setLangState] = useST(() => {
+    try { return localStorage.getItem('amar_lang') || 'id'; } catch(e) { return 'id'; }
+  });
+  const setLang = (l) => {
+    setLangState(l);
+    try { localStorage.setItem('amar_lang', l); } catch(e) {}
+    document.documentElement.lang = l;
+  };
+  useET(() => { document.documentElement.lang = lang; }, []);
+
   const [cfg, setCfg] = useST(() => {
     const saved = localStorage.getItem(LS_CFG);
     const d = saved && deserialize(saved);
     return d || DEFAULT_CFG;
   });
-  // Always begin the journey at the wizard's first step (monthly deposit input).
   const [phase, setPhase] = useST('wizard');
   const [warpKey, setWarpKey] = useST(0);
   const [editing, setEditing] = useST(false);
@@ -29,7 +38,6 @@ function TimeMachine() {
   const toastTimer = useRT(null);
   const reduced = useMT(() => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches, []);
 
-  // persist cfg
   useET(() => { const s = serialize(cfg); if (s) localStorage.setItem(LS_CFG, s); }, [cfg]);
 
   const months = cfgMonths(cfg);
@@ -50,43 +58,47 @@ function TimeMachine() {
 
   const onArrive = useCT(() => {
     setPhase('dash');
-    setTimeout(() => notify('Selamat datang di ' + endDate.getFullYear() + '! 🚀', 'party-popper', 'celebrate'), 250);
-  }, [endDate]);
+    const tl = window.TM_STRINGS[lang] || window.TM_STRINGS.id;
+    setTimeout(() => notify(tl.toast_arrive(endDate.getFullYear()), 'party-popper', 'celebrate'), 250);
+  }, [endDate, lang]);
+
+  // Current translations for TimeMachine-level labels (launchLabel props)
+  const tl = window.TM_STRINGS[lang] || window.TM_STRINGS.id;
 
   return (
-    <div className="tm">
-      {phase === 'wizard' && (
-        <Wizard cfg={cfg} setCfg={setCfg} onLaunch={launch} />
-      )}
+    <LangContext.Provider value={{ lang, setLang }}>
+      <div className="tm">
+        {phase === 'wizard' && (
+          <Wizard cfg={cfg} setCfg={setCfg} onLaunch={launch} launchLabel={tl.launch} />
+        )}
 
-      {phase === 'warp' && (
-        <Warp key={warpKey} startDate={cfg.startDate} endDate={endDate} onArrive={onArrive} reduced={reduced} />
-      )}
+        {phase === 'warp' && (
+          <Warp key={warpKey} startDate={cfg.startDate} endDate={endDate} onArrive={onArrive} reduced={reduced} />
+        )}
 
-      {phase === 'dash' && (
-        <Dashboard cfg={cfg} setCfg={setCfg} result={result}
-          onRestart={launch}
-          onEditFull={() => setEditing(true)}
-          notify={notify} />
-      )}
+        {phase === 'dash' && (
+          <Dashboard cfg={cfg} setCfg={setCfg} result={result}
+            onRestart={launch}
+            onEditFull={() => setEditing(true)}
+            notify={notify} />
+        )}
 
-      {/* full-edit overlay (reuses the wizard over the dashboard) */}
-      {editing && phase === 'dash' && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 350, overflow: 'auto' }}>
-          <Wizard cfg={cfg} setCfg={setCfg} initialStep={1} launchLabel="Lompat lagi ke masa depan"
-            onLaunch={launch} onExit={() => setEditing(false)} />
+        {editing && phase === 'dash' && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 350, overflow: 'auto' }}>
+            <Wizard cfg={cfg} setCfg={setCfg} initialStep={1} launchLabel={tl.re_launch}
+              onLaunch={launch} onExit={() => setEditing(false)} />
+          </div>
+        )}
+
+        <div className={'tm-toast' + (toast ? ' show' : '')}>
+          {toast && <>
+            <span className="ti" style={{ background: toast.tone === 'warn' ? 'var(--warning)' : 'var(--grad-mark)' }}>
+              <Icon name={toast.icon} size={15} color="#fff" />
+            </span>{toast.msg}</>}
         </div>
-      )}
-
-      {/* toast + confetti */}
-      <div className={'tm-toast' + (toast ? ' show' : '')}>
-        {toast && <>
-          <span className="ti" style={{ background: toast.tone === 'warn' ? 'var(--warning)' : 'var(--grad-mark)' }}>
-            <Icon name={toast.icon} size={15} color="#fff" />
-          </span>{toast.msg}</>}
+        <Confetti seed={confetti} />
       </div>
-      <Confetti seed={confetti} />
-    </div>
+    </LangContext.Provider>
   );
 }
 
