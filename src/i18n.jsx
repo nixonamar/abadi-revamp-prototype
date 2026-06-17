@@ -10,10 +10,11 @@ window.STRINGS = {
       note: 'PT Bank Amar Indonesia Tbk — simpanan dijamin hingga Rp 2 miliar',
     },
     nav: {
-      individu:'Individu', bisnis:'Bisnis', platform:'Platform', lainnya:'Lainnya',
+      individu:'Individu', bisnis:'Bisnis', platform:'Platform', tentang:'Tentang Kami', lainnya:'Lainnya',
       d_tunaiku:'Pinyaman Tunaiku', d_banking:'Banking Digital', d_wealth:'Relationship Banking',
       d_umkm:'UMKM & Startup', d_korporat:'Korporat',
-      d_tentang:'Tentang Kami', d_tunaiku2:'Tunaiku', d_karier:'Karier', d_hubungi:'Hubungi Kami',
+      d_perusahaan:'Perusahaan', d_tatakelola:'Tata Kelola Perusahaan', d_investor:'Hubungan Investor',
+      d_karier:'Karir', d_hubungi:'Hubungi Kami', d_blog:'Blog',
       bantuan:'Bantuan', download:'Download Amar Bank',
     },
     hero: {
@@ -180,8 +181,8 @@ window.STRINGS = {
       col1:'Individu', col2:'Bisnis & Platform', col3:'Perusahaan',
       l1:['Pinjaman Tunaiku','Celengan','Deposito','Wealth Banking'],
       l2:['Business Banking','Corporate Banking','Embedded Banking','Dokumentasi API'],
-      l3:['Tentang Kami','Karier','Hubungi Kami','FAQ'],
-      l3h:[null,null,'#lokasi',null],
+      l3:['Perusahaan','Tata Kelola Perusahaan','Hubungan Investor','Karir','Hubungi Kami','Blog'],
+      l3h:['perusahaan.html','tata-kelola.html','hubungan-investor.html','karir.html','hubungi-kami.html','blog.html'],
       legal:'PT Bank Amar Indonesia Tbk berizin dan diawasi oleh OJK, serta merupakan peserta penjaminan LPS. Maksimum nilai simpanan yang dijamin LPS per nasabah per bank adalah Rp 2 miliar. Seluruh data lead bisnis & korporat dikelola sesuai UU Pelindungan Data Pribadi (UU PDP). © 2026 Amar Bank.',
     },
     location:{
@@ -236,10 +237,11 @@ window.STRINGS = {
       note:'PT Bank Amar Indonesia Tbk — deposits guaranteed up to Rp 2 billion',
     },
     nav: {
-      individu:'Individual', bisnis:'Business', platform:'Platform', lainnya:'More',
+      individu:'Individual', bisnis:'Business', platform:'Platform', tentang:'About Us', lainnya:'More',
       d_tunaiku:'Tunaiku Loan', d_banking:'Digital Banking', d_wealth:'Relationship Banking',
       d_umkm:'SME & Startup', d_korporat:'Corporate',
-      d_tentang:'About Us', d_tunaiku2:'Tunaiku', d_karier:'Careers', d_hubungi:'Contact Us',
+      d_perusahaan:'Company', d_tatakelola:'Corporate Governance', d_investor:'Investor Relations',
+      d_karier:'Careers', d_hubungi:'Contact Us', d_blog:'Blog',
       bantuan:'Help', download:'Download Amar Bank',
     },
     hero: {
@@ -406,8 +408,8 @@ window.STRINGS = {
       col1:'Individual', col2:'Business & Platform', col3:'Company',
       l1:['Tunaiku Loan','Celengan','Deposito','Wealth Banking'],
       l2:['Business Banking','Corporate Banking','Embedded Banking','API Documentation'],
-      l3:['About Us','Careers','Contact Us','FAQ'],
-      l3h:[null,null,'#lokasi',null],
+      l3:['Company','Corporate Governance','Investor Relations','Careers','Contact Us','Blog'],
+      l3h:['perusahaan.html','tata-kelola.html','hubungan-investor.html','karir.html','hubungi-kami.html','blog.html'],
       legal:'PT Bank Amar Indonesia Tbk is licensed and supervised by OJK, and is a member of the LPS deposit guarantee scheme. Maximum guaranteed deposit value per customer per bank is Rp 2 billion. All business & corporate lead data is managed in accordance with the Personal Data Protection Law (PDP Law). © 2026 Amar Bank.',
     },
     location:{

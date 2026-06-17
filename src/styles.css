@@ -87,9 +87,9 @@ button{font-family:inherit}
   border-radius:var(--r-md);box-shadow:var(--sh-3);padding:8px;min-width:180px;display:flex;flex-direction:column;
   opacity:0;pointer-events:none;transition:.18s;z-index:60}
 .dropdown.open{opacity:1;pointer-events:auto;top:150%}
-.dropdown span{padding:10px 14px;border-radius:var(--r-sm);font-size:14px;color:var(--ink);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:9px}
-.dropdown span svg{flex:none;opacity:.7}
-.dropdown span:hover{background:var(--bg);color:var(--amar-blue)}
+.dropdown span,.dropdown a{padding:10px 14px;border-radius:var(--r-sm);font-size:14px;color:var(--ink);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:9px;text-decoration:none}
+.dropdown span svg,.dropdown a svg{flex:none;opacity:.7}
+.dropdown span:hover,.dropdown a:hover{background:var(--bg);color:var(--amar-blue)}
 .nav-cta{margin-left:auto;display:flex;align-items:center;gap:14px}
 
 /* ---------- language toggle ---------- */

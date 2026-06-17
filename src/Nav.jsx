@@ -70,13 +70,15 @@ function Nav({ onCta, onJump }) {
             </div>
           </span>
           <span className="navlink" onClick={() => jumpTo('platform', null)}>{s.platform}</span>
-          <span className="navlink has-drop" onClick={() => toggleNav('lainnya')}>
-            {s.lainnya} <Icon name="chevron-down" size={15} />
-            <div className={'dropdown' + (openNav === 'lainnya' ? ' open' : '')}>
-              <span>{s.d_tentang}</span>
-              <span>{s.d_tunaiku2}</span>
-              <span>{s.d_karier}</span>
-              <span>{s.d_hubungi}</span>
+          <span className="navlink has-drop" onClick={() => toggleNav('tentang')}>
+            {s.tentang} <Icon name="chevron-down" size={14} />
+            <div className={'dropdown' + (openNav === 'tentang' ? ' open' : '')}>
+              <a href="perusahaan.html"><Icon name="building-2" size={14}/> {s.d_perusahaan}</a>
+              <a href="tata-kelola.html"><Icon name="scale" size={14}/> {s.d_tatakelola}</a>
+              <a href="hubungan-investor.html"><Icon name="trending-up" size={14}/> {s.d_investor}</a>
+              <a href="karir.html"><Icon name="briefcase" size={14}/> {s.d_karier}</a>
+              <a href="hubungi-kami.html"><Icon name="headphones" size={14}/> {s.d_hubungi}</a>
+              <a href="blog.html"><Icon name="newspaper" size={14}/> {s.d_blog}</a>
             </div>
           </span>
         </div>

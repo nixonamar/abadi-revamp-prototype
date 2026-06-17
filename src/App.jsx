@@ -26,8 +26,22 @@ function Site(){
     try { localStorage.setItem('amar_lang', l); } catch(e) {}
     document.documentElement.lang = l;
   };
-  // Sync html lang on mount
-  useEffect(() => { document.documentElement.lang = lang; }, []);
+  // Sync html lang on mount + handle deep-link hash from sub-pages
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    const hash = window.location.hash.replace('#','');
+    if (!hash) return;
+    const [pillarName, sub] = hash.split('-');
+    const map = { individu:'indiv', bisnis:'biz', platform:'plat' };
+    if (!map[pillarName]) return;
+    setPillar(map[pillarName]);
+    if (sub && pillarName === 'individu') setISub(sub);
+    if (sub && pillarName === 'bisnis') setBSub(sub);
+    setTimeout(() => {
+      const el = document.getElementById('gateway');
+      if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 70; window.scrollTo({ top:y, behavior:'smooth' }); }
+    }, 350);
+  }, []);
 
   const [pillar, setPillar] = useState('indiv');
   const [iSub, setISub] = useState('tunaiku');
