@@ -16,7 +16,7 @@ window.TM_STRINGS = {
     optional: 'opsional',
     // Step 2
     s2_eyebrow: 'Langkah 2 · Alokasi',
-    s2_h1: (amt) => `Sebar ${amt}/bulan`,
+    s2_h1: (amt) => <>Sebar {amt}/bulan</>,
     rp_mode: 'Rupiah', pct_mode: 'Persen',
     over100: 'Melebihi 100%',
     allocated: (pct, rem) => `${pct}% teralokasi · sisa ${rem}% ke Aktif`,
@@ -131,7 +131,7 @@ window.TM_STRINGS = {
     initial_q: 'Have initial funds to start with?',
     optional: 'optional',
     s2_eyebrow: 'Step 2 · Allocation',
-    s2_h1: (amt) => `Spread ${amt}/month`,
+    s2_h1: (amt) => <>Spread {amt}/month</>,
     rp_mode: 'Rupiah', pct_mode: 'Percent',
     over100: 'Over 100%',
     allocated: (pct, rem) => `${pct}% allocated · ${rem}% remaining to Active`,
